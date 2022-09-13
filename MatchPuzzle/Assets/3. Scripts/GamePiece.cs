@@ -7,6 +7,8 @@ public class GamePiece : MonoBehaviour
     public int xIndex;
     public int yIndex;
 
+    Board m_board;
+
     bool m_isMoving = false;
 
     public InterpType interpolation = InterpType.SmootherStep;
@@ -20,9 +22,24 @@ public class GamePiece : MonoBehaviour
         SmootherStep
     };
 
+    public MatchValue matchValue;
+
+    public enum MatchValue
+    {
+        Yellow,
+        Blue,
+        Green,
+        Indigo,
+        Magenta,
+        Cyan,
+        Red,
+        Teal,
+        Wild
+    };
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        /*if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             Move((int)Mathf.Round(transform.position.x + 2), (int)transform.position.y, 0.5f);
             Debug.Log("right");
@@ -32,8 +49,13 @@ public class GamePiece : MonoBehaviour
         {
             Move((int)Mathf.Round(transform.position.x - 2), (int)transform.position.y, 0.5f);
             Debug.Log("Left");
-        }
+        }*/
 
+    }
+
+    public void Init(Board board)
+    {
+        m_board = board;
     }
 
     public void SetCoord(int x, int y)
@@ -42,7 +64,7 @@ public class GamePiece : MonoBehaviour
         yIndex = y;
     }
 
-    private void Move(int destX, int destY, float timeToMove)
+    public void Move(int destX, int destY, float timeToMove)
     {
         if (!m_isMoving)
         {
@@ -61,7 +83,11 @@ public class GamePiece : MonoBehaviour
             if (Vector3.Distance(transform.position, destination) < 0.01f) // 목적지에 도착하면
             {
                 reachedDestination = true;
-                transform.position = destination;
+                if (m_board != null)
+                {
+                    m_board.PlaceGamePiece(this, (int)destination.x, (int)destination.y);
+                }
+                //transform.position = destination;
                 SetCoord((int)destination.x, (int)destination.y);
             }
 
