@@ -19,6 +19,8 @@ public class Board : MonoBehaviour
     Tile m_clickedTile;
     Tile m_targetTile;
 
+    bool m_playerInputEnabled = true;
+
     void Start()
     {
         m_allTiles = new Tile[width, height]; //이차원 배열 안에 크기 설정
@@ -151,6 +153,7 @@ public class Board : MonoBehaviour
         return null;
     }
 
+
     public void ClickTile(Tile tile)
     {
         if (m_clickedTile == null)
@@ -187,37 +190,45 @@ public class Board : MonoBehaviour
 
     IEnumerator SwitchTilesRoutine(Tile clickedTile, Tile targetTile)
     {
-        //두 개 gamepiece를 교체
-        GamePiece clickedPiece = m_allGamePiece[clickedTile.xIndex, clickedTile.yIndex];
-        GamePiece targetPiece = m_allGamePiece[targetTile.xIndex, targetTile.yIndex];
-
-        if (clickedPiece != null && targetPiece != null)
+        if (m_playerInputEnabled)
         {
+            //두 개 gamepiece를 교체
+            GamePiece clickedPiece = m_allGamePiece[clickedTile.xIndex, clickedTile.yIndex];
+            GamePiece targetPiece = m_allGamePiece[targetTile.xIndex, targetTile.yIndex];
 
-            clickedPiece.Move(targetTile.xIndex, targetTile.yIndex, swapTime);
-            targetPiece.Move(clickedTile.xIndex, clickedTile.yIndex, swapTime);
-
-            yield return new WaitForSeconds(swapTime);
-
-            List<GamePiece> clickedPieceMathes = FindMatchesAt(clickedTile.xIndex, clickedTile.yIndex);
-            List<GamePiece> targetPieceMatches = FindMatchesAt(targetTile.xIndex, targetTile.yIndex);
-
-            if (clickedPieceMathes.Count == 0 && targetPieceMatches.Count == 0)
+            if (clickedPiece != null && targetPiece != null)
             {
-                clickedPiece.Move(clickedTile.xIndex, clickedTile.yIndex, swapTime);
-                targetPiece.Move(targetTile.xIndex, targetTile.yIndex, swapTime);
 
-                yield return new WaitForSeconds(height);
+                clickedPiece.Move(targetTile.xIndex, targetTile.yIndex, swapTime);
+                targetPiece.Move(clickedTile.xIndex, clickedTile.yIndex, swapTime);
+
+                yield return new WaitForSeconds(swapTime);
+
+                List<GamePiece> clickedPieceMathes = FindMatchesAt(clickedTile.xIndex, clickedTile.yIndex);
+                List<GamePiece> targetPieceMatches = FindMatchesAt(targetTile.xIndex, targetTile.yIndex);
+
+                if (clickedPieceMathes.Count == 0 && targetPieceMatches.Count == 0)
+                {
+                    clickedPiece.Move(clickedTile.xIndex, clickedTile.yIndex, swapTime);
+                    targetPiece.Move(targetTile.xIndex, targetTile.yIndex, swapTime);
+
+                    yield return new WaitForSeconds(swapTime);
+                }
+                else
+                {
+                    /*ClearPieceAt(clickedPieceMathes);
+                    ClearPieceAt(targetPieceMatches);
+
+                    CollapseColumn(clickedPieceMathes);
+                    CollapseColumn(targetPieceMatches);*/
+
+                    ClearAndRefillBoard(clickedPieceMathes.Union(targetPieceMatches).ToList());
+                }
+
+                /*HightlightMatchesAt(clickedTile.xIndex, clickedTile.yIndex);
+                HightlightMatchesAt(targetTile.xIndex, targetTile.yIndex);*/
+
             }
-            else
-            {
-                ClearPieceAt(clickedPieceMathes);
-                ClearPieceAt(targetPieceMatches);
-            }
-
-            /*HightlightMatchesAt(clickedTile.xIndex, clickedTile.yIndex);
-            HightlightMatchesAt(targetTile.xIndex, targetTile.yIndex);*/
-
         }
     }
 
@@ -280,7 +291,6 @@ public class Board : MonoBehaviour
                     break;
                 }
             }
-
         }
 
         if (matches.Count >= minLenth)      //세 개 이상일 때 리턴해줌.
@@ -348,6 +358,7 @@ public class Board : MonoBehaviour
 
     }
 
+
     void HighlightTileOff(int x, int y)
     {
         SpriteRenderer spriteRenderer = m_allTiles[x, y].GetComponent<SpriteRenderer>();
@@ -385,6 +396,18 @@ public class Board : MonoBehaviour
         }
     }
 
+    void HighlightPieces(List<GamePiece> gamePieces)
+    {
+        foreach (GamePiece piece in gamePieces)
+        {
+            if (piece != null)
+            {
+            HighlightTileOn(piece.xIndex, piece.yIndex, piece.GetComponent<SpriteRenderer>().color);
+            }
+        }
+    }
+
+
     private List<GamePiece> FindMatchesAt(int i, int j, int minLength = 3)
     {
         List<GamePiece> horizMatches = FindHorizontalMatches(i, j, minLength);
@@ -403,6 +426,19 @@ public class Board : MonoBehaviour
         var combineMatches = horizMatches.Union(vertMatches).ToList();
         return combineMatches;
     }
+
+    private List<GamePiece> FindMatchesAt(List<GamePiece> gamePieces, int minLength = 3)
+    {
+        List<GamePiece> matches = new List<GamePiece>();
+
+        foreach (GamePiece piece in gamePieces)
+        {
+            matches = matches.Union(FindMatchesAt(piece.xIndex, piece.yIndex, minLength)).ToList();
+        }
+
+        return matches;
+    }
+
 
     void ClearPieceAt(int x, int y)
     {
@@ -435,4 +471,126 @@ public class Board : MonoBehaviour
             }
         }
     }
+
+
+    List<GamePiece> CollapseColumn(int column, float collapseTime = 0.1f)
+    {
+        List<GamePiece> movingPiece = new List<GamePiece>();
+
+        for (int i = 0; i < height; i++)
+        {
+            if (m_allGamePiece[column, i] == null)
+            {
+                for (int j = i + 1; j < height; j++)    //j가 위에 내려가야할 피스들
+                {
+                    if (m_allGamePiece[column, j] != null)
+                    {
+                        m_allGamePiece[column, j].Move(column, i, collapseTime * (j - i));
+                        m_allGamePiece[column, i] = m_allGamePiece[column, j];
+                        m_allGamePiece[column, i].SetCoord(column, i);
+
+                        if (!movingPiece.Contains(m_allGamePiece[column, i]))
+                        {
+                            movingPiece.Add(m_allGamePiece[column, i]);
+                        }
+
+                        m_allGamePiece[column, j] = null;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return movingPiece;
+    }
+
+    List<GamePiece> CollapseColumn(List<GamePiece> gamePiece)
+    {
+        List<GamePiece> movingPieces = new List<GamePiece>();
+        List<int> columnsToCollapse = GetColumns(gamePiece);
+
+        foreach (int column in columnsToCollapse)
+        {
+            movingPieces = movingPieces.Union(CollapseColumn(column)).ToList();
+        }
+
+        return movingPieces;
+    }
+
+    List<int> GetColumns(List<GamePiece> gamePiece)
+    {
+        List<int> columns = new List<int>();
+
+        foreach (GamePiece piece in gamePiece)
+        {
+            if (!columns.Contains(piece.xIndex))
+            {
+                columns.Add(piece.xIndex);
+            }
+        }
+
+        return columns;
+    }
+
+
+    void ClearAndRefillBoard(List<GamePiece> gamePieces)
+    {
+        StartCoroutine(ClearAndRefillBoardRountine(gamePieces));
+    }
+
+    IEnumerator ClearAndRefillBoardRountine(List<GamePiece> gamePieces)
+    {
+        m_playerInputEnabled = false;
+        //clear and collapse
+
+        StartCoroutine(ClearAndCollapseRountine(gamePieces));
+
+        yield return null;
+
+        //refill
+        m_playerInputEnabled = true;
+    }
+
+    IEnumerator ClearAndCollapseRountine(List<GamePiece> gamePieces)
+    {
+        List<GamePiece> movingPieces = new List<GamePiece>();
+        List<GamePiece> matchse = new List<GamePiece>();
+
+        HighlightPieces(gamePieces);
+        yield return new WaitForSeconds(0.25f);
+        bool isFinished = false;
+
+        while (!isFinished)
+        {
+            ClearPieceAt(gamePieces);
+
+            yield return new WaitForSeconds(0.25f);
+            movingPieces = CollapseColumn(gamePieces);
+            yield return new WaitForSeconds(0.25f);
+
+            matchse = FindMatchesAt(movingPieces);
+
+            if (matchse.Count == 0)
+            {
+                isFinished = true;
+                break;
+            }
+            else
+            {
+                yield return StartCoroutine(ClearAndCollapseRountine(matchse));  //제귀함수
+                isFinished = true;
+            }
+        }
+
+        yield return null;
+    }
+
+
+
+
+
+
+
+
+
 }
