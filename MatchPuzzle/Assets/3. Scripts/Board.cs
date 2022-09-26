@@ -8,7 +8,8 @@ public class Board : MonoBehaviour
     public int width;
     public int height;
     public int borderSize = 2;
-    public GameObject tilePrefabs;
+    public GameObject tileNormalPrefabs;
+    public GameObject tileObstaclePrefab;
     public GameObject[] gamePiecePerfabs;
 
     public float swapTime = 0.5f;
@@ -21,29 +22,56 @@ public class Board : MonoBehaviour
 
     bool m_playerInputEnabled = true;
 
+    public StartingTile[] startingTiles;
+
+    [System.Serializable]
+    public class StartingTile
+    {
+        public GameObject tilePerfab;
+        public int x;
+        public int y;
+        public int z;
+    }
+
     void Start()
     {
         m_allTiles = new Tile[width, height]; //이차원 배열 안에 크기 설정
         m_allGamePiece = new GamePiece[width, height]; //배열 초기화
         SetupTiles();
         SetupCamera();
-        FilBorad();
+        FilBorad(10, 0.5f);
+
     }
 
     void SetupTiles() //타일 설정하는 함수
     {
+        foreach (StartingTile sTile in startingTiles)
+        {
+            if (sTile != null)
+            {
+                MakeTile(sTile.tilePerfab, sTile.x, sTile.y, sTile.z);
+            }
+        }
+
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
-                GameObject tile = Instantiate(tilePrefabs, new Vector3(i, j, 0), Quaternion.identity); //회전 0, 회전 없음
-                tile.name = "Tile(" + i + "," + j + ")";
-                m_allTiles[i,j] = tile.GetComponent<Tile>();
-                tile.transform.parent = transform;
-
-                m_allTiles[i,j].Init(i, j, this);
+                if (m_allTiles[i, j] == null)
+                {
+                    MakeTile(tileNormalPrefabs, i, j);
+                }
             }
         }
+    }
+
+    private void MakeTile(GameObject perfab, int x, int y, int z = 0)
+    {
+        GameObject tile = Instantiate(tileNormalPrefabs, new Vector3(x, y, z), Quaternion.identity); //회전 0, 회전 없음
+        tile.name = "Tile(" + x + "," + y + ")";
+        m_allTiles[x, y] = tile.GetComponent<Tile>();
+        tile.transform.parent = transform;
+        m_allTiles[x, y].Init(x, y, this);
     }
 
     void SetupCamera()
@@ -102,7 +130,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    void FilBorad()
+    void FilBorad(int falseYOffset = 0, float moveTime = 0.1f)
     {
         int maxInterations = 100;
         int iterations = 0;
@@ -111,16 +139,19 @@ public class Board : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                GamePiece Piece = FillRandomAt(i, j);
-                while (HasMatchOnFill(i, j))
+                if (m_allGamePiece[i, j] == null)
                 {
-                    ClearPieceAt(i, j);
-                    Piece = FillRandomAt(i, j);
-                    iterations++;
-                    if (iterations >= maxInterations)
+                    GamePiece Piece = FillRandomAt(i, j, falseYOffset, moveTime);
+                    while (HasMatchOnFill(i, j))
                     {
-                        Debug.Log("break=====================================");
-                        break;
+                        ClearPieceAt(i, j);
+                        Piece = FillRandomAt(i, j, falseYOffset, moveTime);
+                        iterations++;
+                        if (iterations >= maxInterations)
+                        {
+                            Debug.Log("break=====================================");
+                            break;
+                        }
                     }
                 }
             }
@@ -138,7 +169,7 @@ public class Board : MonoBehaviour
         return (leftMatches.Count > 0 || downMatches.Count > 0);
     }
 
-    private GamePiece FillRandomAt(int i, int j)
+    private GamePiece FillRandomAt(int i, int j, int falseYOffset = 0, float moveTime = 0.1f)
     {
         GameObject randomPiece = Instantiate(GetRandomGamePiece(), Vector3.zero, Quaternion.identity);
 
@@ -146,8 +177,14 @@ public class Board : MonoBehaviour
         {
             randomPiece.GetComponent<GamePiece>().Init(this);
             PlaceGamePiece(randomPiece.GetComponent<GamePiece>(), i, j);
-            randomPiece.transform.parent = transform;
 
+            if (falseYOffset != 0)
+            {
+                randomPiece.transform.position = new Vector3(i, j + falseYOffset, 0);
+                randomPiece.GetComponent<GamePiece>().Move(i, j, moveTime);
+            }
+
+            randomPiece.transform.parent = transform;
             return randomPiece.GetComponent<GamePiece>();
         }
         return null;
@@ -190,7 +227,7 @@ public class Board : MonoBehaviour
 
     IEnumerator SwitchTilesRoutine(Tile clickedTile, Tile targetTile)
     {
-        if (m_playerInputEnabled)
+        //if (m_playerInputEnabled)
         {
             //두 개 gamepiece를 교체
             GamePiece clickedPiece = m_allGamePiece[clickedTile.xIndex, clickedTile.yIndex];
@@ -358,6 +395,21 @@ public class Board : MonoBehaviour
 
     }
 
+    List<GamePiece> FindAllMatches()
+    {
+        List<GamePiece> combinedMatches = new List<GamePiece> ();
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                List<GamePiece> matchs = FindMatchesAt(i, j);
+                combinedMatches = combinedMatches.Union(matchs).ToList();
+            }
+        }
+        return combinedMatches;
+    }
+
 
     void HighlightTileOff(int x, int y)
     {
@@ -457,7 +509,7 @@ public class Board : MonoBehaviour
     {
         foreach (GamePiece piece in gamePieces)
         {
-            ClearPieceAt(piece.xIndex, piece.yIndex);
+            if (piece != null) ClearPieceAt(piece.xIndex, piece.yIndex);
         }
     }
 
@@ -541,13 +593,21 @@ public class Board : MonoBehaviour
     IEnumerator ClearAndRefillBoardRountine(List<GamePiece> gamePieces)
     {
         m_playerInputEnabled = false;
-        //clear and collapse
+        List<GamePiece> matches = gamePieces;
 
-        StartCoroutine(ClearAndCollapseRountine(gamePieces));
+        do {
+            //clear and collapse
+            yield return StartCoroutine(ClearAndCollapseRountine(matches));
+            yield return null;
 
-        yield return null;
+            //refill
+            yield return StartCoroutine(RefillRoutine());
+            matches = FindAllMatches();
 
-        //refill
+            yield return new WaitForSeconds(0.5f);
+            
+        }while (matches.Count != 0);
+
         m_playerInputEnabled = true;
     }
 
@@ -565,7 +625,14 @@ public class Board : MonoBehaviour
             ClearPieceAt(gamePieces);
 
             yield return new WaitForSeconds(0.25f);
+
             movingPieces = CollapseColumn(gamePieces);
+            
+            while (!IsCollapsed(movingPieces))
+            {
+                yield return null;
+            }
+
             yield return new WaitForSeconds(0.25f);
 
             matchse = FindMatchesAt(movingPieces);
@@ -585,7 +652,26 @@ public class Board : MonoBehaviour
         yield return null;
     }
 
+    IEnumerator RefillRoutine()
+    {
+        FilBorad(10, 0.5f);
+        yield return null;
+    }
 
+    bool IsCollapsed(List<GamePiece> gamePieces)
+    {
+        foreach (GamePiece piece in gamePieces)
+        {
+            if (piece != null)
+            {
+                if (piece.transform.position.y - (float)piece.yIndex > 0.01f)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 
 

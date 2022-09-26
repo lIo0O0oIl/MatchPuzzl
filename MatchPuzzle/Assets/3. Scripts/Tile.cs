@@ -1,6 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.WSA;
+
+public enum TileType
+{
+    Normal,
+    Obstacle
+}
 
 public class Tile : MonoBehaviour
 {
@@ -8,10 +15,7 @@ public class Tile : MonoBehaviour
     public int yIndex;
     Board m_board;
 
-    void Start()
-    {
-        
-    }
+    public TileType tileType = TileType.Normal;
 
     public void Init(int x, int y, Board board)
     {
