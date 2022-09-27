@@ -65,13 +65,16 @@ public class Board : MonoBehaviour
         }
     }
 
-    private void MakeTile(GameObject perfab, int x, int y, int z = 0)
+    private void MakeTile(GameObject prefab, int x, int y, int z = 0)
     {
-        GameObject tile = Instantiate(tileNormalPrefabs, new Vector3(x, y, z), Quaternion.identity); //회전 0, 회전 없음
-        tile.name = "Tile(" + x + "," + y + ")";
-        m_allTiles[x, y] = tile.GetComponent<Tile>();
-        tile.transform.parent = transform;
-        m_allTiles[x, y].Init(x, y, this);
+        if (prefab != null)
+        {
+            GameObject tile = Instantiate(prefab, new Vector3(x, y, z), Quaternion.identity); //회전 0, 회전 없음
+            tile.name = "Tile(" + x + "," + y + ")";
+            m_allTiles[x, y] = tile.GetComponent<Tile>();
+            tile.transform.parent = transform;
+            m_allTiles[x, y].Init(x, y, this);
+        }
     }
 
     void SetupCamera()
@@ -139,7 +142,7 @@ public class Board : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                if (m_allGamePiece[i, j] == null)
+                if (m_allGamePiece[i, j] == null && m_allTiles[i, j].tileType != TileType.Obstacle)
                 {
                     GamePiece Piece = FillRandomAt(i, j, falseYOffset, moveTime);
                     while (HasMatchOnFill(i, j))
@@ -413,14 +416,20 @@ public class Board : MonoBehaviour
 
     void HighlightTileOff(int x, int y)
     {
-        SpriteRenderer spriteRenderer = m_allTiles[x, y].GetComponent<SpriteRenderer>();
-        spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0);
+        if (m_allTiles[x, y].tileType != TileType.Breakable)
+        {
+            SpriteRenderer spriteRenderer = m_allTiles[x, y].GetComponent<SpriteRenderer>();
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0);
+        }
     }
 
     void HighlightTileOn(int x, int y, Color color)
     {
-        SpriteRenderer spriteRenderer = m_allTiles[x, y].GetComponent<SpriteRenderer>();
-        spriteRenderer.color = color;
+        if (m_allTiles[x, y].tileType != TileType.Breakable)
+        {
+            SpriteRenderer spriteRenderer = m_allTiles[x, y].GetComponent<SpriteRenderer>();
+            spriteRenderer.color = color;
+        }
     }
 
     void HighlightMatchse()
@@ -513,6 +522,27 @@ public class Board : MonoBehaviour
         }
     }
 
+    private void BreakTileAt(int x, int y)
+    {
+        Tile tileToBreak = m_allTiles[x, y];
+
+        if (tileToBreak != null)
+        {
+            tileToBreak.BreakTile();
+        }
+    }
+
+    void BreakTileAt(List<GamePiece> gamePIeces)
+    {
+        foreach(GamePiece piece in gamePIeces)
+        {
+            if (piece != null)
+            {
+                BreakTileAt(piece.xIndex, piece.yIndex);
+            }
+        }
+    }
+
     void ClearBoard()
     {
         for (int i = 0; i < width; i++)
@@ -531,9 +561,9 @@ public class Board : MonoBehaviour
 
         for (int i = 0; i < height; i++)
         {
-            if (m_allGamePiece[column, i] == null)
+            if (m_allGamePiece[column, i] == null && m_allTiles[column, i].tileType != TileType.Obstacle)   // 타일 타입이 노멀일 때만 이동하게
             {
-                for (int j = i + 1; j < height; j++)    //j가 위에 내려가야할 피스들
+                for (int j = i + 1; j < height; j++)    // j가 위에 내려가야할 피스들
                 {
                     if (m_allGamePiece[column, j] != null)
                     {
@@ -623,6 +653,8 @@ public class Board : MonoBehaviour
         while (!isFinished)
         {
             ClearPieceAt(gamePieces);
+
+            BreakTileAt(gamePieces);
 
             yield return new WaitForSeconds(0.25f);
 
