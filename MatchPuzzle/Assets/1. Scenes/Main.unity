@@ -163,44 +163,23 @@ MonoBehaviour:
   - {fileID: 7069751930413066198, guid: 4645af732915c1b47a29255c880fe3af, type: 3}
   - {fileID: 8372234998033808479, guid: 76b52a9b727fb864e8a75e9b4e9cb7a0, type: 3}
   - {fileID: 8787554800553870218, guid: 6b5f2b6462cc1c149a484dc093ec0fda, type: 3}
+  adjacentBombPrefab: {fileID: 1995741510983375920, guid: 5c539de9436d05b498d704bb6db8e4cf, type: 3}
+  rowBombPrefab: {fileID: 1995741510983375920, guid: ad8ea45392f695a45929c8b1fb45c421, type: 3}
+  columnBombPrefab: {fileID: 1995741510983375920, guid: 88e4dff1f76b43149b21f7f306b023fc, type: 3}
   swapTime: 0.5
-  startingTiles:
-  - Perfab: {fileID: 5324032819671902527, guid: d5af83ec63e32ed4497224be71818ed2, type: 3}
-    x: 3
-    y: 4
-    z: 0
-  - Perfab: {fileID: 5324032819671902527, guid: d5af83ec63e32ed4497224be71818ed2, type: 3}
-    x: 5
-    y: 5
-    z: 0
-  - Perfab: {fileID: 5324032819671902527, guid: 411096e037cdf224087bcadc07949403, type: 3}
-    x: 2
-    y: 2
-    z: 0
-  - Perfab: {fileID: 5324032819671902527, guid: 411096e037cdf224087bcadc07949403, type: 3}
-    x: 2
-    y: 3
-    z: 0
-  - Perfab: {fileID: 5324032819671902527, guid: 6cc52876c555f08469722d1858b97898, type: 3}
-    x: 4
-    y: 3
-    z: 0
-  - Perfab: {fileID: 5324032819671902527, guid: 6cc52876c555f08469722d1858b97898, type: 3}
-    x: 4
-    y: 4
-    z: 0
+  startingTiles: []
   startingGamePiece:
-  - Perfab: {fileID: 8450326616103053193, guid: e817e0f3d3464324e9df47fc05544037, type: 3}
-    x: 0
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
+    x: 1
     y: 1
     z: 0
-  - Perfab: {fileID: 8450326616103053193, guid: e817e0f3d3464324e9df47fc05544037, type: 3}
-    x: 0
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
+    x: 1
     y: 2
     z: 0
-  - Perfab: {fileID: 8450326616103053193, guid: e817e0f3d3464324e9df47fc05544037, type: 3}
-    x: 1
-    y: 0
+  - Perfab: {fileID: 1995741510983375920, guid: 5c539de9436d05b498d704bb6db8e4cf, type: 3}
+    x: 2
+    y: 3
     z: 0
 --- !u!4 &277924404
 Transform:
