@@ -170,16 +170,32 @@ MonoBehaviour:
   startingTiles: []
   startingGamePiece:
   - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 1
-    y: 1
+    x: 3
+    y: 3
     z: 0
   - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 1
-    y: 2
+    x: 3
+    y: 4
     z: 0
-  - Perfab: {fileID: 1995741510983375920, guid: 5c539de9436d05b498d704bb6db8e4cf, type: 3}
-    x: 2
-    y: 3
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
+    x: 3
+    y: 6
+    z: 0
+  - Perfab: {fileID: 1995741510983375920, guid: 88e4dff1f76b43149b21f7f306b023fc, type: 3}
+    x: 4
+    y: 5
+    z: 0
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
+    x: 5
+    y: 4
+    z: 0
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
+    x: 6
+    y: 4
+    z: 0
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
+    x: 5
+    y: 5
     z: 0
 --- !u!4 &277924404
 Transform:
