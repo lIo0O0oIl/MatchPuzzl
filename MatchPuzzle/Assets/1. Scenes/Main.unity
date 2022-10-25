@@ -166,6 +166,7 @@ MonoBehaviour:
   adjacentBombPrefab: {fileID: 1995741510983375920, guid: 5c539de9436d05b498d704bb6db8e4cf, type: 3}
   rowBombPrefab: {fileID: 1995741510983375920, guid: ad8ea45392f695a45929c8b1fb45c421, type: 3}
   columnBombPrefab: {fileID: 1995741510983375920, guid: 88e4dff1f76b43149b21f7f306b023fc, type: 3}
+  colorBombPerfab: {fileID: 1995741510983375920, guid: b11bf1984807ed0469fb84f84dbbe27a, type: 3}
   swapTime: 0.5
   startingTiles: []
   startingGamePiece:
@@ -181,20 +182,12 @@ MonoBehaviour:
     x: 3
     y: 6
     z: 0
-  - Perfab: {fileID: 1995741510983375920, guid: 88e4dff1f76b43149b21f7f306b023fc, type: 3}
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
+    x: 3
+    y: 7
+    z: 0
+  - Perfab: {fileID: 1995741510983375920, guid: b11bf1984807ed0469fb84f84dbbe27a, type: 3}
     x: 4
-    y: 5
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 5
-    y: 4
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 6
-    y: 4
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 5
     y: 5
     z: 0
 --- !u!4 &277924404
@@ -401,9 +394,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 724989ae6bacce84daa17cd7c3bdd318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clearFXPrefab: {fileID: 5049929283176080613, guid: 5e084465c891b7b4ba469186f33c81f1, type: 3}
+  clearFXPrefab: {fileID: 5049929283176080613, guid: 95da0800a1a78c74fb98922473d0d95f, type: 3}
   breakFXPrefab: {fileID: 5049929283176080613, guid: a80c477d3de81844daedfec57b40763c, type: 3}
   doubleBreakFXPrefab: {fileID: 5049929283176080613, guid: b4c84521d4afc3b44981fc0963494ff9, type: 3}
+  bombFXPerfab: {fileID: 5049929283176080613, guid: 5e084465c891b7b4ba469186f33c81f1, type: 3}
 --- !u!4 &806275997
 Transform:
   m_ObjectHideFlags: 0

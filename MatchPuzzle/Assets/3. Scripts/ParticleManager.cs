@@ -8,6 +8,8 @@ public class ParticleManager : MonoBehaviour
     public GameObject breakFXPrefab;
     public GameObject doubleBreakFXPrefab;
 
+    public GameObject bombFXPerfab;
+
     public void ClearPieceFXAt(int x, int y, int z = 0)
     {
         if (clearFXPrefab != null)
@@ -50,12 +52,24 @@ public class ParticleManager : MonoBehaviour
             if (particlePlayer != null)
             {
                 particlePlayer.Play();
-                //particlePlayer?.Play();   // 이 세줄을 한번에 C# 물음표 널 연산자임.
+                //particlePlayer?.Play();   // 이 세줄을 한번에 C# 물음표 널 연산자로
             }
         }
     }
 
+    public void bombFXAt(int x, int y, int z = 0)
+    {
+        if (bombFXPerfab != null)
+        {
+            GameObject bombFX = Instantiate(bombFXPerfab, new Vector3(x, y, z), Quaternion.identity);
+            ParticlePlayer particlePlayer = bombFX.GetComponent<ParticlePlayer>();
 
+            if (particlePlayer != null)
+            {
+                particlePlayer.Play();
+            }
+        }
+    }
 
 
 

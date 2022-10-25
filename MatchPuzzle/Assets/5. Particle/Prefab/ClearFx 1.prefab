@@ -9787,7 +9787,7 @@ GameObject:
   - component: {fileID: 3310808763008167755}
   - component: {fileID: 9042549517402477168}
   m_Layer: 0
-  m_Name: ClearFx
+  m_Name: ClearFx 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

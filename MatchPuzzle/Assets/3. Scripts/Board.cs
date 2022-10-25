@@ -17,6 +17,7 @@ public class Board : MonoBehaviour
     public GameObject adjacentBombPrefab;
     public GameObject rowBombPrefab;
     public GameObject columnBombPrefab;
+    public GameObject colorBombPerfab;
 
     GameObject m_clickedTileBomb;
     GameObject m_targetTileBomb;
@@ -293,12 +294,35 @@ public class Board : MonoBehaviour
                 clickedPiece.Move(targetTile.xIndex, targetTile.yIndex, swapTime);
                 targetPiece.Move(clickedTile.xIndex, clickedTile.yIndex, swapTime);
 
+
                 yield return new WaitForSeconds(swapTime);
 
                 List<GamePiece> clickedPieceMathes = FindMatchesAt(clickedTile.xIndex, clickedTile.yIndex);
                 List<GamePiece> targetPieceMatches = FindMatchesAt(targetTile.xIndex, targetTile.yIndex);
+                List<GamePiece> colorMatches = new List<GamePiece>();
 
-                if (clickedPieceMathes.Count == 0 && targetPieceMatches.Count == 0)
+                if (isColorBomb(clickedPiece) && !isColorBomb(targetPiece))
+                {
+                    clickedPiece.matchValue = targetPiece.matchValue;
+                    colorMatches = FindAllMatchValue(clickedPiece.matchValue);
+                }
+                else if (!isColorBomb(clickedPiece) && isColorBomb(targetPiece))
+                {
+                    targetPiece.matchValue = clickedPiece.matchValue;
+                    colorMatches = FindAllMatchValue(targetPiece.matchValue);
+                }
+                else if (isColorBomb(clickedPiece) && isColorBomb(targetPiece))
+                {
+                    foreach (GamePiece piece in m_allGamePiece)
+                    {
+                        if (!colorMatches.Contains(piece))
+                        {
+                            colorMatches.Add(piece);
+                        }
+                    }
+                }
+
+                if (clickedPieceMathes.Count == 0 && targetPieceMatches.Count == 0 && colorMatches.Count == 0)
                 {
                     clickedPiece.Move(clickedTile.xIndex, clickedTile.yIndex, swapTime);
                     targetPiece.Move(targetTile.xIndex, targetTile.yIndex, swapTime);
@@ -314,16 +338,22 @@ public class Board : MonoBehaviour
                     if (m_clickedTileBomb != null && targetPiece != null)
                     {
                         GamePiece clickedBombPiece = m_clickedTileBomb.GetComponent<GamePiece>();
-                        clickedBombPiece.ChangeColor(targetPiece);
+                        if (!isColorBomb(clickedBombPiece))
+                        {
+                            clickedBombPiece.ChangeColor(targetPiece);
+                        }
                     }
 
                     if (m_targetTileBomb != null && clickedPiece != null)
                     {
                         GamePiece targetBombPiece = m_targetTileBomb.GetComponent<GamePiece>();
-                        targetBombPiece.ChangeColor(clickedPiece);
+                        if (!isColorBomb(targetBombPiece))
+                        {
+                            targetBombPiece.ChangeColor(clickedPiece);
+                        }
                     }
 
-                    ClearAndRefillBoard(clickedPieceMathes.Union(targetPieceMatches).ToList());
+                    ClearAndRefillBoard(clickedPieceMathes.Union(targetPieceMatches).ToList().Union(colorMatches).ToList());
                 }
 
             }
@@ -573,7 +603,7 @@ public class Board : MonoBehaviour
         //HighlightTileOff(x, y);
     }
 
-    void ClearPieceAt(List<GamePiece> gamePieces)
+    void ClearPieceAt(List<GamePiece> gamePieces, List<GamePiece> bombedPieces)
     {
         foreach (GamePiece piece in gamePieces)
         {
@@ -583,12 +613,17 @@ public class Board : MonoBehaviour
 
                 if (m_particleManager != null)
                 {
+                    if (bombedPieces.Contains(piece))
+                    {
+                        m_particleManager.bombFXAt(piece.xIndex, piece.yIndex);
+                    }
                     m_particleManager.ClearPieceFXAt(piece.xIndex, piece.yIndex);
                 }
             }
+
         }
     }
-
+    
     private void BreakTileAt(int x, int y)
     {
         Tile tileToBreak = m_allTiles[x, y];
@@ -729,7 +764,10 @@ public class Board : MonoBehaviour
             List<GamePiece> bombedPieces = GetBombedPieces(gamePieces);
             gamePieces = gamePieces.Union(bombedPieces).ToList();
 
-            ClearPieceAt(gamePieces);
+            bombedPieces = GetBombedPieces(gamePieces);
+            gamePieces = gamePieces.Union(bombedPieces).ToList();
+            
+            ClearPieceAt(gamePieces, bombedPieces);
             BreakTileAt(gamePieces);
 
             if (m_clickedTileBomb != null)
@@ -927,6 +965,14 @@ public class Board : MonoBehaviour
             }
             else
             {
+                if (gamePieces.Count >= 5)
+                {
+                    if (colorBombPerfab != null)
+                    {
+                        bomb = MakeBomb(colorBombPerfab, x, y);
+                    }
+                }
+
                 Debug.Log(swapDirection);
                 //rowbomb
                 if (swapDirection.x != 0)
@@ -960,6 +1006,37 @@ public class Board : MonoBehaviour
         }
     }
 
+
+    List<GamePiece> FindAllMatchValue(MatchValue mValue)
+    {
+        List<GamePiece> foundPieces = new List<GamePiece>();
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (m_allGamePiece[i, j] != null)
+                {
+                    if (m_allGamePiece[i, j].matchValue == mValue)
+                    {
+                        foundPieces.Add(m_allGamePiece[i, j]);
+                    }
+                }
+            }
+        }
+
+        return foundPieces;
+    }
+
+    bool isColorBomb(GamePiece gamePiece)
+    {
+        Bomb bomb = gamePiece.GetComponent<Bomb>();
+        if (bomb != null)
+        {
+            return (bomb.bombType == BombType.Color);
+        }
+        return false;
+    }
 
 
 
