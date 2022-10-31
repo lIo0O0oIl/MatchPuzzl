@@ -167,28 +167,29 @@ MonoBehaviour:
   rowBombPrefab: {fileID: 1995741510983375920, guid: ad8ea45392f695a45929c8b1fb45c421, type: 3}
   columnBombPrefab: {fileID: 1995741510983375920, guid: 88e4dff1f76b43149b21f7f306b023fc, type: 3}
   colorBombPerfab: {fileID: 1995741510983375920, guid: b11bf1984807ed0469fb84f84dbbe27a, type: 3}
+  maxCollectibles: 3
+  collectibleCount: 0
+  chanceForCollectible: 0.3
+  collectiblePerfabs:
+  - {fileID: 1995741510983375920, guid: 4b38858b6c861de4aa06ec06b95957af, type: 3}
   swapTime: 0.5
   startingTiles: []
   startingGamePiece:
   - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 3
-    y: 3
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 3
-    y: 4
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 3
-    y: 6
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 3
-    y: 7
-    z: 0
-  - Perfab: {fileID: 1995741510983375920, guid: b11bf1984807ed0469fb84f84dbbe27a, type: 3}
     x: 4
     y: 5
+    z: 0
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
+    x: 4
+    y: 6
+    z: 0
+  - Perfab: {fileID: 1995741510983375920, guid: 4b38858b6c861de4aa06ec06b95957af, type: 3}
+    x: 4
+    y: 8
+    z: 0
+  - Perfab: {fileID: 1995741510983375920, guid: 6b5004794cc729846918a5653434ca1a, type: 3}
+    x: 4
+    y: 3
     z: 0
 --- !u!4 &277924404
 Transform:
@@ -411,38 +412,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &861567958
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 861567959}
-  m_Layer: 0
-  m_Name: YellowDot
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &861567959
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 861567958}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1630037596
 GameObject:
@@ -538,7 +508,7 @@ RectTransform:
   m_Children:
   - {fileID: 723106091}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -611,5 +581,5 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
