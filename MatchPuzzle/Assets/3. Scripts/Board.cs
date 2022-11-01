@@ -30,6 +30,8 @@ public class Board : MonoBehaviour
     GameObject m_targetTileBomb;
 
     public float swapTime = 0.5f;
+    public int falseYOffset = 10;
+    public float moveTime = 0.5f;
 
     Tile[,] m_allTiles; //2차원 배열 선언
     GamePiece[,] m_allGamePiece;
@@ -59,8 +61,12 @@ public class Board : MonoBehaviour
         m_allGamePiece = new GamePiece[width, height]; //배열 초기화
         SetupTiles();
         SetUpGamePieces();
+
+        List<GamePiece> startingCollectibles = FindAllcollectibles();
+        collectibleCount = startingCollectibles.Count;
+
         SetupCamera();
-        FilBorad(10, 0.5f);
+        FilBorad(falseYOffset, moveTime);
 
         m_particleManager = FindObjectOfType<ParticleManager>();
     }
@@ -821,7 +827,11 @@ public class Board : MonoBehaviour
             bombedPieces = GetBombedPieces(gamePieces);
             gamePieces = gamePieces.Union(bombedPieces).ToList();
 
-            List<GamePiece> collectedPieces = FindCollectiblesAt(0);
+            List<GamePiece> collectedPieces = FindCollectiblesAt(0, true);
+
+            List<GamePiece> allCollectibles = FindAllcollectibles();
+            List<GamePiece> blockers = gamePieces.Intersect(allCollectibles).ToList();
+            collectedPieces = collectedPieces.Union(blockers).ToList();
             collectibleCount -= collectedPieces.Count;
 
             gamePieces = gamePieces.Union(collectedPieces).ToList();
@@ -873,7 +883,7 @@ public class Board : MonoBehaviour
 
     IEnumerator RefillRoutine()
     {
-        FilBorad(10, 0.5f);
+        FilBorad(falseYOffset, moveTime);
         yield return null;
     }
 
@@ -1034,21 +1044,22 @@ public class Board : MonoBehaviour
                         bomb = MakeBomb(colorBombPerfab, x, y);
                     }
                 }
-
-                Debug.Log(swapDirection);
-                //rowbomb
-                if (swapDirection.x != 0)
-                {
-                    if (rowBombPrefab != null)
-                    {
-                        bomb = MakeBomb(rowBombPrefab, x, y);
-                    }
-                }
                 else
                 {
-                    if (columnBombPrefab != null)
+                    //rowbomb
+                    if (swapDirection.x != 0)
                     {
-                        bomb = MakeBomb(columnBombPrefab, x, y);
+                        if (rowBombPrefab != null)
+                        {
+                            bomb = MakeBomb(rowBombPrefab, x, y);
+                        }
+                    }
+                    else
+                    {
+                        if (columnBombPrefab != null)
+                        {
+                            bomb = MakeBomb(columnBombPrefab, x, y);
+                        }
                     }
                 }
                 //columBomb
@@ -1101,7 +1112,7 @@ public class Board : MonoBehaviour
     }
 
 
-    List<GamePiece> FindCollectiblesAt(int row)
+    List<GamePiece> FindCollectiblesAt(int row, bool clearAtBottomOnly = false)
     {
         List<GamePiece> foundCollectible = new List<GamePiece>();
 
@@ -1111,9 +1122,12 @@ public class Board : MonoBehaviour
             {
                 Collectable collectibleComponent = m_allGamePiece[i, row].GetComponent<Collectable>();
 
-                if (collectibleComponent != null)
+                if (collectibleComponent)
                 {
-                    foundCollectible.Add(m_allGamePiece[i, row]);
+                    if (!clearAtBottomOnly || (clearAtBottomOnly && collectibleComponent.clearedAtBottom))
+                    {
+                        foundCollectible.Add(m_allGamePiece[i, row]);
+                    }
                 }
             }
         }

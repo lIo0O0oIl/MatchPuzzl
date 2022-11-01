@@ -172,7 +172,10 @@ MonoBehaviour:
   chanceForCollectible: 0.3
   collectiblePerfabs:
   - {fileID: 1995741510983375920, guid: 4b38858b6c861de4aa06ec06b95957af, type: 3}
+  - {fileID: 1995741510983375920, guid: 202580bcf9294dd4faae4f67b4b76b37, type: 3}
   swapTime: 0.5
+  falseYOffset: 10
+  moveTime: 0.5
   startingTiles: []
   startingGamePiece:
   - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
@@ -183,11 +186,11 @@ MonoBehaviour:
     x: 4
     y: 6
     z: 0
-  - Perfab: {fileID: 1995741510983375920, guid: 4b38858b6c861de4aa06ec06b95957af, type: 3}
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
     x: 4
-    y: 8
+    y: 2
     z: 0
-  - Perfab: {fileID: 1995741510983375920, guid: 6b5004794cc729846918a5653434ca1a, type: 3}
+  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
     x: 4
     y: 3
     z: 0

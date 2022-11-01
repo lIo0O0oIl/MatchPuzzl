@@ -5,7 +5,7 @@ using UnityEngine;
 public class Collectable : GamePiece
 {
     public bool clearedByBomb = false;
-    public bool clearedAtBottom = false;
+    public bool clearedAtBottom = true;
     
     // Start is called before the first frame update
     void Start()
