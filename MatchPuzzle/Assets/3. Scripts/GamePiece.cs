@@ -38,6 +38,8 @@ public class GamePiece : MonoBehaviour
 
     public MatchValue matchValue;
 
+    public int scoreValue = 20;
+
     private void Update()
     {
         /*if (Input.GetKeyDown(KeyCode.RightArrow))
@@ -133,6 +135,14 @@ public class GamePiece : MonoBehaviour
                 renderToChange.color = rendererToMatch.color;
             }
             matchValue = pieceToMatch.matchValue;
+        }
+    }
+
+    public void ScorePoints(int multiplier = 1, int bonus = 0)
+    {
+        if (ScoreManager.instance != null)
+        {
+            ScoreManager.instance.AddScore(scoreValue * multiplier + bonus);
         }
     }
 }

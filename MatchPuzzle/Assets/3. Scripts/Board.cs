@@ -46,6 +46,8 @@ public class Board : MonoBehaviour
 
     ParticleManager m_particleManager;
 
+    int m_scoreMultiplier = 0;
+
     [System.Serializable]
     public class StartingObject
     {
@@ -118,13 +120,12 @@ public class Board : MonoBehaviour
     }
 
     void SetupCamera()
-    { //이거
+    {
         Camera.main.transform.position = new Vector3((float)(width - 1) / 2f, (float)(height - 1) / 2f, -10f);
         float aspectRatio = (float)Screen.width / (float)Screen.height;
         float verticalSize = (float)height / 2f + (float)borderSize;
-        float horizontalSize = (float)width / 2f + (float)borderSize / aspectRatio;
-        Camera.main.orthographicSize = (verticalSize > horizontalSize) ? verticalSize : horizontalSize;
-
+        float horizontalSize = ((float)width / 2f + (float)borderSize) / aspectRatio;
+        Camera.main.orthographicSize = (verticalSize > horizontalSize ? verticalSize : horizontalSize);
     }
 
     GameObject GetRandomobject(GameObject[] objectArray)
@@ -671,6 +672,13 @@ public class Board : MonoBehaviour
             {
                 ClearPieceAt(piece.xIndex, piece.yIndex);
 
+                int bonus = 0;
+                if (gamePieces.Count >= 4)
+                {
+                    bonus = 20;
+                }
+                piece.ScorePoints(m_scoreMultiplier, bonus);
+
                 if (m_particleManager != null)
                 {
                     if (bombedPieces.Contains(piece))
@@ -792,8 +800,11 @@ public class Board : MonoBehaviour
         m_playerInputEnabled = false;
         List<GamePiece> matches = gamePieces;
 
+        m_scoreMultiplier = 0;
+
         do
         {
+            m_scoreMultiplier++;
             //clear and collapse
             yield return StartCoroutine(ClearAndCollapseRountine(matches));
             yield return null;
@@ -873,6 +884,7 @@ public class Board : MonoBehaviour
             }
             else
             {
+                m_scoreMultiplier++;
                 yield return StartCoroutine(ClearAndCollapseRountine(matchse));  //제귀함수
                 isFinished = true;
             }
