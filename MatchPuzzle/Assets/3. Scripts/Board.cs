@@ -61,6 +61,11 @@ public class Board : MonoBehaviour
     {
         m_allTiles = new Tile[width, height]; //이차원 배열 안에 크기 설정
         m_allGamePiece = new GamePiece[width, height]; //배열 초기화
+        m_particleManager = FindObjectOfType<ParticleManager>();
+    }
+
+    public void SetUpBorad()
+    {
         SetupTiles();
         SetUpGamePieces();
 
@@ -69,8 +74,6 @@ public class Board : MonoBehaviour
 
         SetupCamera();
         FilBorad(falseYOffset, moveTime);
-
-        m_particleManager = FindObjectOfType<ParticleManager>();
     }
 
     void SetupTiles() //타일 설정하는 함수
@@ -383,7 +386,7 @@ public class Board : MonoBehaviour
                     }
                 }
 
-                if (clickedPieceMathes.Count == 0 && targetPieceMatches.Count == 0 && colorMatches.Count == 0)
+                if (clickedPieceMathes.Count == 0 && targetPieceMatches.Count == 0 && colorMatches.Count == 0)  //매치되지 않아 본래로 돌아감
                 {
                     clickedPiece.Move(clickedTile.xIndex, clickedTile.yIndex, swapTime);
                     targetPiece.Move(targetTile.xIndex, targetTile.yIndex, swapTime);
@@ -392,6 +395,12 @@ public class Board : MonoBehaviour
                 }
                 else
                 {
+                    if (GameManager.instance != null)   //매치 시 매치 카운트 돌아감
+                    {
+                        GameManager.instance.movesLeft--;
+                        GameManager.instance.UpdateMoves();
+                    }
+
                     Vector2 swapDirection = new Vector2(targetTile.xIndex - clickedTile.xIndex, targetTile.yIndex - clickedTile.yIndex);
                     m_clickedTileBomb = DropBomb(clickedTile.xIndex, clickedTile.yIndex, swapDirection, clickedPieceMathes);
                     m_targetTileBomb = DropBomb(targetTile.xIndex, targetTile.yIndex, swapDirection, targetPieceMatches);
