@@ -17,8 +17,15 @@ public class GameManager : Singleton<GameManager>
     bool m_isReadyToBegin = false;
     bool m_isGameOver = false;
     bool m_isWinner = false;
+    bool m_isReadToToload = false;
 
     Board m_board;
+
+    public MesageWindow messageWindow;
+
+    public Sprite loseIcon;
+    public Sprite winIcon;
+    public Sprite goalIcon;
 
     private void Start()
     {
@@ -48,20 +55,31 @@ public class GameManager : Singleton<GameManager>
         yield return StartCoroutine("EndGameRoutine");
     }
 
+    public void BeginGame()
+    {
+        m_isReadyToBegin = true;
+    }
+
     IEnumerator StartGameRoutine()
     {
+        if (messageWindow != null)
+        {
+            messageWindow.GetComponent<RectXformMover>().MoveOn();
+            messageWindow.ShowMessage(goalIcon, "Score goal\n" + scoreGoal.ToString(), "Start");
+        }
+
         while (!m_isReadyToBegin)
         {
             yield return null;
-            yield return new WaitForSeconds(2f);
-            m_isReadyToBegin = true;
+            //yield return new WaitForSeconds(2f);
+            //m_isReadyToBegin = true;
         }
 
         screenFader?.FadeOff();
 
         yield return new WaitForSeconds(0.5f);
 
-        m_board?.SetUpBorad();
+        if (m_board != null) m_board?.SetUpBorad();
     }
 
     IEnumerator PlayGameRoutine()
@@ -80,19 +98,37 @@ public class GameManager : Singleton<GameManager>
 
     IEnumerator EndGameRoutine()
     {
-        if (screenFader != null)
-        {
-            screenFader.FadeOn();
-        }
+        m_isReadToToload = false;
 
         if (m_isWinner)
         {
-            Debug.Log("you win");
+            if (messageWindow != null)
+            {
+                messageWindow.GetComponent<RectXformMover>().MoveOn();
+                messageWindow.ShowMessage(winIcon, "You win!!", "ok");
+            }
         }
         else
         {
-            Debug.Log("you lost");
+            if (messageWindow != null)
+            {
+                messageWindow.GetComponent<RectXformMover>().MoveOn();
+                messageWindow.ShowMessage(loseIcon, "You lose...", "ok");
+            }
         }
-        yield return null;
+
+        if (screenFader != null) screenFader.FadeOn();
+
+        while (!m_isReadToToload)
+        {
+            yield return null;
+        }
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void ReloadScene()
+    {
+        m_isReadToToload = true;
     }
 }
