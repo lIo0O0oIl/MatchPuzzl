@@ -38,6 +38,8 @@ public class GamePiece : MonoBehaviour
 
     public MatchValue matchValue;
 
+    public AudioClip clearSound;
+
     public int scoreValue = 20;
 
     private void Update()
@@ -143,6 +145,11 @@ public class GamePiece : MonoBehaviour
         if (ScoreManager.instance != null)
         {
             ScoreManager.instance.AddScore(scoreValue * multiplier + bonus);
+        }
+
+        if (SoundManager.instance != null)
+        {
+            SoundManager.instance.PlayClipAtPoint(clearSound, Vector3.zero, SoundManager.instance.fxVolume);
         }
     }
 }

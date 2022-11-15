@@ -86,6 +86,15 @@ public class GameManager : Singleton<GameManager>
     {
         while (!m_isGameOver)
         {
+            if (ScoreManager.instance != null)
+            {
+                if (ScoreManager.instance.CurrentScore >= scoreGoal)
+                {
+                    m_isGameOver = true;
+                    m_isWinner = true;
+                }
+            }
+
             if (movesLeft == 0)
             {
                 m_isGameOver = true;
@@ -107,13 +116,23 @@ public class GameManager : Singleton<GameManager>
                 messageWindow.GetComponent<RectXformMover>().MoveOn();
                 messageWindow.ShowMessage(winIcon, "You win!!", "ok");
             }
+
+            if (SoundManager.instance != null)
+            {
+                SoundManager.instance.PlayWinSound();
+            }
         }
         else
         {
             if (messageWindow != null)
             {
                 messageWindow.GetComponent<RectXformMover>().MoveOn();
-                messageWindow.ShowMessage(loseIcon, "You lose...", "ok");
+                messageWindow.ShowMessage(loseIcon, "You lose..", "ok");
+            }
+
+            if (SoundManager.instance != null)
+            {
+                SoundManager.instance.PlayloseSound();
             }
         }
 
