@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 3af497ae3697e0a449002eeddd30a174, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5cfb7db0cb24644c6b0bff821cef7e30, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -100,7 +100,7 @@ MonoBehaviour:
   xIndex: 0
   yIndex: 0
   interpolation: 4
-  matchValue: 9
+  matchValue: 11
   clearSound: {fileID: 8300000, guid: b1e6e75baf8f04ae59f52e341161f1a9, type: 3}
   scoreValue: 20
   clearedByBomb: 1

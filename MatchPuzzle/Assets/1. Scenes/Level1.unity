@@ -627,11 +627,32 @@ MonoBehaviour:
   - {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
   - {fileID: 2734645675220192889, guid: ab0240bb9420c1f4ebdbd4623a47eae8, type: 3}
   - {fileID: 7069751930413066198, guid: 4645af732915c1b47a29255c880fe3af, type: 3}
-  - {fileID: 8372234998033808479, guid: 76b52a9b727fb864e8a75e9b4e9cb7a0, type: 3}
+  - {fileID: 4749669701358570579, guid: 274c0c9a8db7f3744a6fe7626fbd4a41, type: 3}
   - {fileID: 8787554800553870218, guid: 6b5f2b6462cc1c149a484dc093ec0fda, type: 3}
-  adjacentBombPrefab: {fileID: 1995741510983375920, guid: 5c539de9436d05b498d704bb6db8e4cf, type: 3}
-  rowBombPrefab: {fileID: 1995741510983375920, guid: ad8ea45392f695a45929c8b1fb45c421, type: 3}
-  columnBombPrefab: {fileID: 1995741510983375920, guid: 88e4dff1f76b43149b21f7f306b023fc, type: 3}
+  adjacentBombPrefabs:
+  - {fileID: 1995741510983375920, guid: 5c539de9436d05b498d704bb6db8e4cf, type: 3}
+  - {fileID: 1995741510983375920, guid: d4087d7346705094893a7bbd792afd34, type: 3}
+  - {fileID: 1995741510983375920, guid: 1cb6b44037f4c574a8e347d6dbba3f7a, type: 3}
+  - {fileID: 1995741510983375920, guid: ded9624030beb4a4e8a4b2c4e85a3ce7, type: 3}
+  - {fileID: 1995741510983375920, guid: cb757ce7e458ebd4bb244dde4ff979af, type: 3}
+  - {fileID: 1995741510983375920, guid: f45b3e7a362096146903ac9db1a80493, type: 3}
+  - {fileID: 1995741510983375920, guid: d5eeaeb22aad3ad48b0949ff6e0de8ee, type: 3}
+  rowBombPrefabs:
+  - {fileID: 1995741510983375920, guid: ad8ea45392f695a45929c8b1fb45c421, type: 3}
+  - {fileID: 1995741510983375920, guid: 54a6115844a88234d9872cd1c38314b0, type: 3}
+  - {fileID: 1995741510983375920, guid: a10a137188a0b3d4498c709700ca4506, type: 3}
+  - {fileID: 1995741510983375920, guid: f3e438deba7e34547a92b0eb77f59d41, type: 3}
+  - {fileID: 1995741510983375920, guid: 66074458f66327f40ad968e492e01993, type: 3}
+  - {fileID: 1995741510983375920, guid: 6ab48ce5d9384704b89de86926fe0390, type: 3}
+  - {fileID: 1995741510983375920, guid: f6dced9720453a64f9390d3826b038fb, type: 3}
+  columnBombPrefabs:
+  - {fileID: 1995741510983375920, guid: 88e4dff1f76b43149b21f7f306b023fc, type: 3}
+  - {fileID: 1995741510983375920, guid: 79645fbd2fface04e8e0e070dd21e274, type: 3}
+  - {fileID: 1995741510983375920, guid: d1994f3c4c8ba6f4a97328f8ee524f25, type: 3}
+  - {fileID: 1995741510983375920, guid: 057bea715a005294f908e83d565d8ef0, type: 3}
+  - {fileID: 1995741510983375920, guid: d80fe21b70fae17468b724d6966003d2, type: 3}
+  - {fileID: 1995741510983375920, guid: 465c50a8c94e6d843ab7c0dfd7464406, type: 3}
+  - {fileID: 1995741510983375920, guid: 796e4114b0ebe8148ab7362598932641, type: 3}
   colorBombPerfab: {fileID: 1995741510983375920, guid: b11bf1984807ed0469fb84f84dbbe27a, type: 3}
   maxCollectibles: 3
   collectibleCount: 0
@@ -655,10 +676,6 @@ MonoBehaviour:
   - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
     x: 4
     y: 2
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 4
-    y: 3
     z: 0
 --- !u!4 &277924404
 Transform:
@@ -1346,14 +1363,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.17254902, g: 0.09019608, b: 0.2784314, a: 1}
+  m_Color: {r: 0.2053667, g: 0.38300073, b: 0.6132076, a: 0.49019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 06e39d825872b0240bf75eba89bc5e59, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1961,8 +1978,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36aeb9237359cef48b65665b810a6125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movesLeft: 3
-  scoreGoal: 100
+  movesLeft: 15
+  scoreGoal: 2500
   screenFader: {fileID: 1375951497}
   levelNameText: {fileID: 753533519}
   movesLeftText: {fileID: 664192136}

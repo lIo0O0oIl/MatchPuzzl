@@ -14,9 +14,9 @@ public class Board : MonoBehaviour
     public GameObject tileObstaclePrefab;
     public GameObject[] gamePiecePerfabs;
 
-    public GameObject adjacentBombPrefab;
-    public GameObject rowBombPrefab;
-    public GameObject columnBombPrefab;
+    public GameObject[] adjacentBombPrefabs;
+    public GameObject[] rowBombPrefabs;
+    public GameObject[] columnBombPrefabs;
     public GameObject colorBombPerfab;
 
     public int maxCollectibles = 3;
@@ -1058,47 +1058,58 @@ public class Board : MonoBehaviour
     GameObject DropBomb(int x, int y, Vector2 swapDirection, List<GamePiece> gamePieces)
     {
         GameObject bomb = null;
+        MatchValue matchValue = MatchValue.None;
 
-        if (gamePieces.Count >= 4)
+        if (gamePieces != null)
+        {
+            matchValue = FindMatchValue(gamePieces);
+        }
+
+        if (gamePieces.Count >= 5 && matchValue != MatchValue.None)
         {
             if (IsCornerMatch(gamePieces))
             {
+                GameObject adjacentBomb = FindGamePieceByMatchValue(adjacentBombPrefabs, matchValue);
+
                 //adjacentBomb
-                if (adjacentBombPrefab != null)
+                if (adjacentBombPrefabs.Length > null)
                 {
-                    bomb = MakeBomb(adjacentBombPrefab, x, y);
+                    bomb = MakeBomb(adjacentBomb, x, y);
                 }
             }
             else
             {
-                if (gamePieces.Count >= 5)
+                if (colorBombPerfab != null)
                 {
-                    if (colorBombPerfab != null)
-                    {
-                        bomb = MakeBomb(colorBombPerfab, x, y);
-                    }
+                    bomb = MakeBomb(colorBombPerfab, x, y);
                 }
-                else
-                {
-                    //rowbomb
-                    if (swapDirection.x != 0)
-                    {
-                        if (rowBombPrefab != null)
-                        {
-                            bomb = MakeBomb(rowBombPrefab, x, y);
-                        }
-                    }
-                    else
-                    {
-                        if (columnBombPrefab != null)
-                        {
-                            bomb = MakeBomb(columnBombPrefab, x, y);
-                        }
-                    }
-                }
-                //columBomb
-            }            
+            }
         }
+        else if (gamePieces.Count == 4 && matchValue != MatchValue.None)
+        {
+                    //rowbomb
+            if (swapDirection.x != 0)
+            {
+                GameObject rowBomb = FindGamePieceByMatchValue(rowBombPrefabs, matchValue);
+
+                if (rowBomb != null)
+                {
+                     bomb = MakeBomb(rowBomb, x, y);
+                }
+            }
+            //columBomb
+            else
+            {
+                GameObject columnBomb = FindGamePieceByMatchValue(columnBombPrefabs, matchValue);
+
+                if (columnBomb != null)
+                {
+                    bomb = MakeBomb(columnBomb, x, y);
+                }
+            }
+        }
+                  
+        
         return bomb;
     }
 
@@ -1199,6 +1210,41 @@ public class Board : MonoBehaviour
             }
         }
         return bombedPieces.Except(piecesToRemove).ToList();
+    }
+
+    MatchValue FindMatchValue(List<GamePiece> gamePieces)
+    {
+        foreach (GamePiece piece in gamePieces)
+        {
+            if (piece != null)
+            {
+                return piece.matchValue;
+            }
+        }
+        return MatchValue.None;
+    }
+
+    GameObject FindGamePieceByMatchValue(GameObject[] gamePiecePerfabs, MatchValue matchValue)
+    {
+        if (matchValue == MatchValue.None)
+        {
+            return null;
+        }
+
+        foreach(GameObject go in gamePiecePerfabs)
+        {
+            GamePiece piece = go.GetComponent<GamePiece>();
+
+            if (piece != null)
+            {
+                if (piece.matchValue == matchValue)
+                {
+                    return go;
+                }
+            }
+        }
+
+        return null;
     }
 
 
