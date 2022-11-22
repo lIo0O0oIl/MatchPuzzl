@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+[RequireComponent(typeof(BoardDeadlook))]
 public class Board : MonoBehaviour
 {
     public int width;
@@ -45,8 +46,11 @@ public class Board : MonoBehaviour
     public StartingObject[] startingGamePiece;
 
     ParticleManager m_particleManager;
+    BoardDeadlook m_boardDeadlook;
 
     int m_scoreMultiplier = 0;
+
+    public bool isRefilling = false;
 
     [System.Serializable]
     public class StartingObject
@@ -62,6 +66,7 @@ public class Board : MonoBehaviour
         m_allTiles = new Tile[width, height]; //이차원 배열 안에 크기 설정
         m_allGamePiece = new GamePiece[width, height]; //배열 초기화
         m_particleManager = FindObjectOfType<ParticleManager>();
+        m_boardDeadlook = GetComponent<BoardDeadlook>();
     }
 
     public void SetUpBorad()
@@ -346,7 +351,7 @@ public class Board : MonoBehaviour
 
     IEnumerator SwitchTilesRoutine(Tile clickedTile, Tile targetTile)
     {
-        //if (m_playerInputEnabled)
+        if (m_playerInputEnabled && !GameManager.instance./*movesLeft > 0*/IsGameOver)
         {
             //두 개 gamepiece를 교체
             GamePiece clickedPiece = m_allGamePiece[clickedTile.xIndex, clickedTile.yIndex];
@@ -817,6 +822,7 @@ public class Board : MonoBehaviour
         List<GamePiece> matches = gamePieces;
 
         m_scoreMultiplier = 0;
+        isRefilling = false;
 
         do
         {
@@ -833,6 +839,7 @@ public class Board : MonoBehaviour
 
         } while (matches.Count != 0);
 
+        isRefilling = true;
         m_playerInputEnabled = true;
     }
 

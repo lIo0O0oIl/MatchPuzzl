@@ -27,6 +27,8 @@ public class GameManager : Singleton<GameManager>
     public Sprite winIcon;
     public Sprite goalIcon;
 
+    public bool IsGameOver { get => m_isGameOver; set => m_isGameOver = value; }
+
     private void Start()
     {
         m_board = FindObjectOfType<Board>();
@@ -52,6 +54,10 @@ public class GameManager : Singleton<GameManager>
     {
         yield return StartCoroutine("StartGameRoutine");
         yield return StartCoroutine("PlayGameRoutine");
+
+        //마지막 교환하고 다시 보드 채울 때까지 기다리기
+        yield return StartCoroutine("WaitForBoardRoutine", 1f);
+
         yield return StartCoroutine("EndGameRoutine");
     }
 
@@ -103,6 +109,19 @@ public class GameManager : Singleton<GameManager>
 
             yield return null;
         }
+    }
+
+    IEnumerator WaitForBoardRoutine(float delay = 0f)
+    {
+        if (m_board != null)
+        {
+            while (!m_board.isRefilling)
+            {
+                yield return null;
+            }
+        }
+
+        yield return new WaitForSeconds(delay);
     }
 
     IEnumerator EndGameRoutine()

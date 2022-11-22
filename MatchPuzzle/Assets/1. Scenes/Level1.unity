@@ -677,6 +677,7 @@ MonoBehaviour:
     x: 4
     y: 2
     z: 0
+  isRefilling: 0
 --- !u!4 &277924404
 Transform:
   m_ObjectHideFlags: 0
@@ -1978,8 +1979,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36aeb9237359cef48b65665b810a6125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movesLeft: 15
-  scoreGoal: 2500
+  movesLeft: 2
+  scoreGoal: 300
   screenFader: {fileID: 1375951497}
   levelNameText: {fileID: 753533519}
   movesLeftText: {fileID: 664192136}
