@@ -407,7 +407,7 @@ RectTransform:
   - {fileID: 664192135}
   - {fileID: 2093480669}
   m_Father: {fileID: 609473944}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -427,7 +427,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -599,6 +599,7 @@ GameObject:
   m_Component:
   - component: {fileID: 277924404}
   - component: {fileID: 277924403}
+  - component: {fileID: 277924405}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -618,8 +619,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0af8e0de5297a04999cda9146cb2841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 7
-  height: 9
+  width: 5
+  height: 5
   borderSize: 2
   tileNormalPrefabs: {fileID: 5324032819671902527, guid: f47fc02372a1fab44b0aeab86739eb8e, type: 3}
   tileObstaclePrefab: {fileID: 5324032819671902527, guid: d5af83ec63e32ed4497224be71818ed2, type: 3}
@@ -654,7 +655,7 @@ MonoBehaviour:
   - {fileID: 1995741510983375920, guid: 465c50a8c94e6d843ab7c0dfd7464406, type: 3}
   - {fileID: 1995741510983375920, guid: 796e4114b0ebe8148ab7362598932641, type: 3}
   colorBombPerfab: {fileID: 1995741510983375920, guid: b11bf1984807ed0469fb84f84dbbe27a, type: 3}
-  maxCollectibles: 3
+  maxCollectibles: 4
   collectibleCount: 0
   chanceForCollectible: 0.3
   collectiblePerfabs:
@@ -664,19 +665,7 @@ MonoBehaviour:
   falseYOffset: 10
   moveTime: 0.5
   startingTiles: []
-  startingGamePiece:
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 4
-    y: 5
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 4
-    y: 6
-    z: 0
-  - Perfab: {fileID: 6457540838129975485, guid: c51db6891753f6948b15efb3c16439d4, type: 3}
-    x: 4
-    y: 2
-    z: 0
+  startingGamePiece: []
   isRefilling: 0
 --- !u!4 &277924404
 Transform:
@@ -693,6 +682,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &277924405
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277924402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d480fb377a344d409c99b2c35a7fe8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &292891836
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,9 +1105,9 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1375951496}
   - {fileID: 177041570}
   - {fileID: 753533518}
-  - {fileID: 1375951496}
   - {fileID: 161896114}
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -1420,7 +1421,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 609473944}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -1739,7 +1740,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 609473944}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1979,8 +1980,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36aeb9237359cef48b65665b810a6125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movesLeft: 2
-  scoreGoal: 300
+  movesLeft: 20
+  scoreGoal: 10000
   screenFader: {fileID: 1375951497}
   levelNameText: {fileID: 753533519}
   movesLeftText: {fileID: 664192136}

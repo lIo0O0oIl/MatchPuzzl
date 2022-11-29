@@ -16,14 +16,14 @@ public class BoardDeadlook : MonoBehaviour
         {
             if (checkRow)
             {
-                if (x + i < width && y < height)
+                if (x + i < width && y < height && allPieces[x + i, y] != null)
                 {
                     piecesList.Add(allPieces[x + i, y]);
                 }
             }
             else
             {
-                if (x < width && y < height)
+                if (x < width && y +i < height && allPieces[x, y + i] != null)
                 {
                     piecesList.Add(allPieces[x, y + i]);
                 }
@@ -33,7 +33,7 @@ public class BoardDeadlook : MonoBehaviour
         return piecesList;
     }
 
-    List<GamePiece> GetMinimumMatches(List<GamePiece> gamePieces, int minForMatch = 2)
+    List<GamePiece> GetMinimumMatches(List<GamePiece> gamePieces, int minForMatch = 2)  //세개씩 묶어준 것을 그룹으로 만들어준다.
     {
         List<GamePiece> matches = new List<GamePiece>();
 
@@ -80,6 +80,68 @@ public class BoardDeadlook : MonoBehaviour
         }
 
         return neighbors;
+    }
+
+    bool HasMoveAt(GamePiece[,] allPieces, int x, int y, int listLength = 3, bool checkRow = true)  //옮길 것을 찾는 변수
+    {
+        List<GamePiece> pieces = GetRowOrColumnList(allPieces, x, y, listLength, checkRow);
+
+        List<GamePiece> matches = GetMinimumMatches(pieces); //2 개 이상 매치된 것이 있나?
+
+        GamePiece unmatchedPieces = null;
+
+        if(pieces != null && matches != null)
+        {
+            if (pieces.Count == listLength && matches.Count == listLength - 1)
+            {
+                //2개가 매치된 리스트를 제외한 나머지 피스를 구하기
+                unmatchedPieces = pieces.Except(matches).FirstOrDefault();   //첫번째나 널 값을 가져와라 (빼기)
+            }
+
+            if (unmatchedPieces != null)
+            {
+                List<GamePiece> neighbors = GetNeighbors(allPieces, unmatchedPieces.xIndex, unmatchedPieces.yIndex);
+                neighbors = neighbors.Except(matches).ToList();
+                neighbors = neighbors.FindAll(n => n.matchValue == matches[0].matchValue);
+                matches = matches.Union(neighbors).ToList();
+            }
+
+            if (matches.Count >= listLength)
+            {
+                string rowColstr = (checkRow) ? "row" : "Column";
+                Debug.Log("======= Available Move =======");
+                Debug.Log("Move " + matches[0].matchValue + "piece to " + unmatchedPieces.xIndex + "," + unmatchedPieces.yIndex + " to from matching " + rowColstr); 
+                return true;
+            }
+        }
+
+        return false;   //매치되는 것이 없음.
+    }
+
+    public bool IsDeadlocked(GamePiece[,] allPieces, int listLenth = 3)
+    {
+        int width = allPieces.GetLength(0);
+        int height = allPieces.GetLength(1);
+
+        bool isDeadlocked = true;
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (HasMoveAt(allPieces, i, j, listLenth, true) || HasMoveAt(allPieces, i, j, listLenth, false))
+                {
+                    isDeadlocked = false;
+                }
+            }
+        }
+
+        if (isDeadlocked)
+        {
+            Debug.Log("========Board Deadlock======");
+        }
+
+        return isDeadlocked;
     }
 
 
