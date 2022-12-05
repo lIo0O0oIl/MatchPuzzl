@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 [RequireComponent(typeof(BoardDeadlook))]
+[RequireComponent(typeof(BoardShuffler))]
 public class Board : MonoBehaviour
 {
     public int width;
@@ -47,6 +48,7 @@ public class Board : MonoBehaviour
 
     ParticleManager m_particleManager;
     BoardDeadlook m_boardDeadlook;
+    BoardShuffler m_boardShuffler;
 
     int m_scoreMultiplier = 0;
 
@@ -67,6 +69,7 @@ public class Board : MonoBehaviour
         m_allGamePiece = new GamePiece[width, height]; //배열 초기화
         m_particleManager = FindObjectOfType<ParticleManager>();
         m_boardDeadlook = GetComponent<BoardDeadlook>();
+        m_boardShuffler = GetComponent<BoardShuffler>();
     }
 
     public void SetUpBorad()
@@ -78,7 +81,7 @@ public class Board : MonoBehaviour
         collectibleCount = startingCollectibles.Count;
 
         SetupCamera();
-        FilBorad(falseYOffset, moveTime);
+        FillBoard(falseYOffset, moveTime);
     }
 
     void SetupTiles() //타일 설정하는 함수
@@ -202,7 +205,41 @@ public class Board : MonoBehaviour
         }
     }
 
-    void FilBorad(int falseYOffset = 0, float moveTime = 0.1f)
+    void FillBoardFromList(List<GamePiece> gamePieces)
+    {
+        Queue<GamePiece> unusedPieces = new Queue<GamePiece>(gamePieces);
+
+        int maxInteractions = 100;
+        int iteration = 0;
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (m_allGamePiece[i, j] == null && m_allTiles[i, j].tileType != TileType.Obstacle)
+                {
+                    m_allGamePiece[i, j] = unusedPieces.Dequeue();
+
+                    iteration = 0;
+
+                    while (HasMatchOnFill(i, j))
+                    {
+                        unusedPieces.Enqueue(m_allGamePiece[i, j]);
+
+                        m_allGamePiece[i, j] = unusedPieces.Dequeue();
+
+                        iteration++;
+                        if (iteration > maxInteractions)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    void FillBoard(int falseYOffset = 0, float moveTime = 0.1f)
     {
         int maxInterations = 100;
         int iterations = 0;
@@ -843,12 +880,14 @@ public class Board : MonoBehaviour
         //Dead Lock
         if (m_boardDeadlook.IsDeadlocked(m_allGamePiece, 3))
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
             List<GamePiece> collectables = FindAllcollectibles();
             collectibleCount -= collectables.Count();
 
             yield return new WaitForSeconds(1f);
-            ClearBoard();
+            //ClearBoard();
+            yield return StartCoroutine(ShuffleBoardRoutine());
+            //StartCoroutine(ShuffleBoardRoutine());
 
             //yield return StartCoroutine(RefillRoutine());
         }
@@ -938,7 +977,7 @@ public class Board : MonoBehaviour
 
     IEnumerator RefillRoutine()
     {
-        FilBorad(falseYOffset, moveTime);
+        FillBoard(falseYOffset, moveTime);
         yield return null;
     }
 
@@ -949,6 +988,11 @@ public class Board : MonoBehaviour
             if (piece != null)
             {
                 if (piece.transform.position.y - (float)piece.yIndex > 0.01f)
+                {
+                    return false;
+                }
+
+                if (piece.transform.position.x - (float)piece.xIndex > 0.01f)
                 {
                     return false;
                 }
@@ -1271,5 +1315,40 @@ public class Board : MonoBehaviour
     public void TestDeadlock()
     {
         m_boardDeadlook.IsDeadlocked(m_allGamePiece, 3);
+    }
+
+    public async void ShuffleBoard()
+    {
+        if (m_playerInputEnabled)
+        {
+            StartCoroutine(ShuffleBoardRoutine());
+        }
+    }
+
+    IEnumerator ShuffleBoardRoutine()
+    {
+        List<GamePiece> allPieces = new List<GamePiece>();
+
+        foreach(GamePiece piece in m_allGamePiece)
+        {
+            allPieces.Add(piece);
+        }
+
+        while (!IsCollapsed(allPieces))
+        {
+            yield return null;
+        }
+        //포이치랑 와일문을 추가함으로써 매치되는 중에 셔플을 할 수 없도록 함.
+
+        List<GamePiece> normalPieces = m_boardShuffler.RemoveNormalPieces(m_allGamePiece);
+
+        m_boardShuffler.ShuffleList(normalPieces);
+
+        FillBoardFromList(normalPieces);
+
+        m_boardShuffler.MovePieces(m_allGamePiece, swapTime);
+
+        List<GamePiece> matches = FindAllMatches();
+        StartCoroutine(ClearAndRefillBoardRountine(matches));     //예비로 하는거
     }
 }
