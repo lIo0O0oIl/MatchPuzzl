@@ -142,16 +142,4 @@ public class GamePiece : MonoBehaviour
         }
     }
 
-    public void ScorePoints(int multiplier = 1, int bonus = 0)
-    {
-        if (ScoreManager.instance != null)
-        {
-            ScoreManager.instance.AddScore(scoreValue * multiplier + bonus);
-        }
-
-        if (SoundManager.instance != null)
-        {
-            SoundManager.instance.PlayClipAtPoint(clearSound, Vector3.zero, SoundManager.instance.fxVolume);
-        }
-    }
 }

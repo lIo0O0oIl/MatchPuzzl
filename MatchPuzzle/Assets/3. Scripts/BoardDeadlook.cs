@@ -67,7 +67,7 @@ public class BoardDeadlook : MonoBehaviour
 
         foreach (Vector2 dir in searchDirections)
         {
-            if (x + (int)dir.x >= 0 && x + (int)dir.y < width && y + (int)dir.y >= 0 && y + (int)dir.y < height)    //³ôÀÌ¶û ¾îÂ¼°í Á¦¾à°Ç°Í
+            if (x + (int)dir.x >= 0 && x + (int)dir.x < width && y + (int)dir.y >= 0 && y + (int)dir.y < height)    //³ôÀÌ¶û ¾îÂ¼°í Á¦¾à°Ç°Í
             {
                 if (allPieces[x + (int)dir.x, y + (int)dir.y] != null)
                 {

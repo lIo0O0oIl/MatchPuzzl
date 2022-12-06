@@ -439,7 +439,7 @@ public class Board : MonoBehaviour
                 {
                     if (GameManager.instance != null)   //매치 시 매치 카운트 돌아감
                     {
-                        GameManager.instance.movesLeft--;
+                        //GameManager.instance.movesLeft--;
                         GameManager.instance.UpdateMoves();
                     }
 
@@ -735,7 +735,7 @@ public class Board : MonoBehaviour
                     }
                 }
 
-                piece.ScorePoints(m_scoreMultiplier, bonus);
+                GameManager.instance.ScorePoints(piece, m_scoreMultiplier, bonus);
 
                 if (m_particleManager != null)
                 {
